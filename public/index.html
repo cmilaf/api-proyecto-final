@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navia Library</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>Navia Library 📜</h1>
+        <div class="nav-buttons" id="nav-actions"></div>
+    </header>
+
+    <div class="container">
+        
+        <div id="auth-view" class="auth-box">
+            <h2 id="auth-title">Welcome to Navia</h2>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password">
+            </div>
+            <button class="btn-action" id="btn-submit-auth">Login</button>
+            <p style="text-align:center; margin-top:1rem; font-size:0.9rem;">
+                <span id="auth-toggle-msg">Don't have an account?</span> 
+                <a href="#" id="auth-toggle-link" style="color:var(--primary-color); font-weight:bold;">Register here</a>
+            </p>
+        </div>
+
+        <div id="shop-view" class="shop-layout hidden">
+            <main>
+                <input type="text" id="search-input" class="search-bar" placeholder="Search books by title, author, description...">
+                <div id="products-container" class="products-grid"></div>
+            </main>
+
+            <aside>
+                <div class="sidebar-box">
+                    <h3>Your Reading Cart 🛒</h3>
+                    <div id="cart-container"></div>
+                    <p><strong>Total: </strong>$<span id="cart-total">0.00</span></p>
+                    <button class="btn-action" id="btn-checkout">Complete Purchase</button>
+                </div>
+            </aside>
+        </div>
+
+        <div id="orders-view" class="hidden">
+            <button class="btn" style="color:var(--primary-color); border-color:var(--primary-color); margin-bottom:1rem;" id="btn-back-shop">← Back to Bookstore</button>
+            <h2>Your Order History</h2>
+            <div id="orders-container"></div>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
