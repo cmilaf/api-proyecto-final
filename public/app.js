@@ -1,12 +1,12 @@
 const API_URL = 'http://localhost:5000/api';
 let token = localStorage.getItem('token') || '';
-let authMode = 'login'; 
+let authMode = 'login';
 let cart = [];
 
-const authView = document.getElementById('auth-view');
-const shopView = document.getElementById('shop-view');
-const ordersView = document.getElementById('orders-view');
-const navActions = document.getElementById('nav-actions');
+const authView    = document.getElementById('auth-view');
+const shopView    = document.getElementById('shop-view');
+const ordersView  = document.getElementById('orders-view');
+const navActions  = document.getElementById('nav-actions');
 
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
@@ -32,11 +32,11 @@ async function showShopView() {
     authView.classList.add('hidden');
     shopView.classList.remove('hidden');
     ordersView.classList.add('hidden');
-    
+
     navActions.innerHTML = `
-        <span style="margin-right:1rem;">Hello, <b>${localStorage.getItem('username')}</b></span>
+        <span>Welcome, <b>${localStorage.getItem('username')}</b></span>
         <button id="btn-view-orders">My Orders</button>
-        <button id="btn-logout" style="margin-left:0.5rem;">Logout</button>
+        <button id="btn-logout">Logout</button>
     `;
 
     document.getElementById('btn-logout').addEventListener('click', logout);
@@ -57,15 +57,15 @@ function setupEventListeners() {
         e.preventDefault();
         if (authMode === 'login') {
             authMode = 'register';
-            document.getElementById('auth-title').innerText = 'Create Account';
+            document.getElementById('auth-title').innerText = 'Create Your Account';
             document.getElementById('btn-submit-auth').innerText = 'Register';
-            document.getElementById('auth-toggle-msg').innerText = 'Already have an account?';
+            document.getElementById('auth-toggle-msg').innerText = 'Already a member?';
             document.getElementById('auth-toggle-link').innerText = 'Login here';
         } else {
             authMode = 'login';
             document.getElementById('auth-title').innerText = 'Welcome to Navia';
-            document.getElementById('btn-submit-auth').innerText = 'Login';
-            document.getElementById('auth-toggle-msg').innerText = "Don't have an account?";
+            document.getElementById('btn-submit-auth').innerText = 'Enter the Library';
+            document.getElementById('auth-toggle-msg').innerText = 'New to Navia?';
             document.getElementById('auth-toggle-link').innerText = 'Register here';
         }
     });
@@ -84,7 +84,7 @@ async function handleAuth() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    if (!username || !password) return alert('Fill out all inputs');
+    if (!username || !password) return alert('Please fill out all fields.');
 
     const endpoint = authMode === 'login' ? '/auth/login' : '/auth/register';
     try {
@@ -123,7 +123,6 @@ async function fetchProducts(query = '') {
         const container = document.getElementById('products-container');
         container.innerHTML = '';
 
-        // Enlaces de imágenes provistos para el renderizado cíclico automático
         const sampleImages = [
             'https://marieclaire.com.mx/wp-content/uploads/2024/09/el-silencio-de-los-corderos-libros-de-misterio-1068x1582.jpg',
             'https://m.media-amazon.com/images/I/71OsAlMcW-L._SL1500_.jpg',
@@ -138,15 +137,19 @@ async function fetchProducts(query = '') {
             const card = document.createElement('div');
             card.className = 'product-card';
             card.innerHTML = `
-                <img src="${imgUrl}" class="product-image" alt="Book cover">
+                <div class="product-image-wrap">
+                    <img src="${imgUrl}" class="product-image" alt="Book cover">
+                    <div class="product-image-overlay"></div>
+                </div>
                 <div class="product-info">
                     <h4 class="product-title">${product.name}</h4>
-                    <p class="product-desc">${product.description || 'No description available'}</p>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <p class="product-desc">${product.description || 'No description available.'}</p>
+                    <div class="product-meta">
                         <span class="product-price">$${Number(product.price).toFixed(2)}</span>
-                        <span class="product-stock">Stock: ${product.stock}</span>
+                        <span class="product-stock">${product.stock > 0 ? product.stock + ' in stock' : 'Sold Out'}</span>
                     </div>
-                    <button class="btn-action" style="margin-top:1rem; padding:0.5rem;" ${product.stock === 0 ? 'disabled' : ''} onclick="addToCart(${product.id}, '${product.name}', ${product.price}, ${product.stock})">
+                    <button class="btn-action" ${product.stock === 0 ? 'disabled' : ''}
+                        onclick="addToCart(${product.id}, '${product.name.replace(/'/g,"\\'")}', ${product.price}, ${product.stock})">
                         ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
                     </button>
                 </div>
@@ -174,15 +177,22 @@ function renderCart() {
     container.innerHTML = '';
     let total = 0;
 
+    if (cart.length === 0) {
+        container.innerHTML = '<p class="cart-empty">Your cart awaits a selection…</p>';
+        document.getElementById('cart-total').innerText = '0.00';
+        return;
+    }
+
     cart.forEach(item => {
         total += item.price * item.quantity;
         const div = document.createElement('div');
         div.className = 'cart-item';
         div.innerHTML = `
-            <div style="display:flex; justify-content:space-between;">
-                <span><b>${item.name}</b> (x${item.quantity})</span>
-                <span>$${(item.price * item.quantity).toFixed(2)}</span>
+            <div class="cart-item-row">
+                <span class="cart-item-name">${item.name}</span>
+                <span class="cart-item-price">$${(item.price * item.quantity).toFixed(2)}</span>
             </div>
+            <span class="cart-item-qty">x${item.quantity} &mdash; $${Number(item.price).toFixed(2)} each</span>
         `;
         container.appendChild(div);
     });
@@ -191,8 +201,8 @@ function renderCart() {
 }
 
 async function handleCheckout() {
-    if (cart.length === 0) return alert('Your cart is empty');
-    
+    if (cart.length === 0) return alert('Your cart is empty.');
+
     try {
         const response = await fetch(`${API_URL}/orders`, {
             method: 'POST',
@@ -225,19 +235,20 @@ async function fetchOrders() {
         container.innerHTML = '';
 
         if (orders.length === 0) {
-            container.innerHTML = '<p>You have not placed any orders yet.</p>';
+            container.innerHTML = '<p style="font-style:italic; color:var(--text-mid);">You have not placed any orders yet.</p>';
             return;
         }
 
         orders.forEach(order => {
             const div = document.createElement('div');
             div.className = 'order-card';
-            let itemsHtml = order.items.map(i => `<li>${i.name} - ${i.quantity} unit(s) x $${Number(i.price_at_purchase).toFixed(2)}</li>`).join('');
+            const itemsHtml = order.items.map(i =>
+                `<li>${i.name} &mdash; ${i.quantity} unit(s) &times; $${Number(i.price_at_purchase).toFixed(2)}</li>`
+            ).join('');
             div.innerHTML = `
-                <p><strong>Order ID:</strong> #${order.id} | <strong>Date:</strong> ${new Date(order.order_date).toLocaleString()}</p>
+                <p><strong>Order ID</strong> &nbsp;#${order.id} &emsp; <strong>Date</strong> &nbsp;${new Date(order.order_date).toLocaleString()}</p>
                 <ul>${itemsHtml}</ul>
-                <p><strong>Total Amount Paid:</strong> <span style="color:var(--primary-color); font-weight:bold;">$${Number(order.total_amount).toFixed(2)}</span></p>
-                <hr style="border: 0; border-top: 1px dashed var(--border-color);">
+                <p><strong>Total Paid</strong> &nbsp;<span style="color:var(--gold); font-family:'Cinzel',serif; font-size:1.05rem;">$${Number(order.total_amount).toFixed(2)}</span></p>
             `;
             container.appendChild(div);
         });
