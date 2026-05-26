@@ -3,58 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navia Library</title>
+    <title>Navia Library — A Curated Collection of Fine Volumes</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
     <header>
-        <h1>Navia Library 📜</h1>
-        <div class="nav-buttons" id="nav-actions"></div>
+        <div class="header-inner">
+            <div>
+                <span style="font-family:'IM Fell English',serif; font-style:italic; font-size:0.75rem; color:var(--brown-light); letter-spacing:2px; display:block; margin-bottom:2px;">Est. MMXXIV</span>
+                <h1><span class="header-ornament">❧</span> Navia Library <span class="header-ornament">❧</span></h1>
+                <span class="header-subtitle">A Curated Collection of Fine Volumes &amp; Literary Works</span>
+            </div>
+            <div class="nav-buttons" id="nav-actions"></div>
+        </div>
+        <div class="ornament-bar">
+            ✦ &nbsp; &nbsp; ✦ &nbsp; &nbsp; ✦
+        </div>
     </header>
 
     <div class="container">
-        
+
+        <!-- ── AUTH VIEW ── -->
         <div id="auth-view" class="auth-box">
-            <h2 id="auth-title">Welcome to Navia</h2>
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username">
+            <div class="auth-header">
+                <h2 id="auth-title">Welcome to Navia</h2>
             </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password">
+            <div class="auth-body">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter your name…">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••">
+                </div>
+                <button class="btn-action" id="btn-submit-auth">Enter the Library</button>
+                <p class="auth-toggle">
+                    <span id="auth-toggle-msg">New to Navia?</span>&nbsp;
+                    <a href="#" id="auth-toggle-link">Register here</a>
+                </p>
             </div>
-            <button class="btn-action" id="btn-submit-auth">Login</button>
-            <p style="text-align:center; margin-top:1rem; font-size:0.9rem;">
-                <span id="auth-toggle-msg">Don't have an account?</span> 
-                <a href="#" id="auth-toggle-link" style="color:var(--primary-color); font-weight:bold;">Register here</a>
-            </p>
         </div>
 
+        <!-- ── SHOP VIEW ── -->
         <div id="shop-view" class="shop-layout hidden">
             <main>
-                <input type="text" id="search-input" class="search-bar" placeholder="Search books by title, author, description...">
+                <div class="search-wrapper">
+                    <input type="text" id="search-input" class="search-bar" placeholder="Search by title, author, description…">
+                </div>
+
+                <p class="section-title">The Collection</p>
+
                 <div id="products-container" class="products-grid"></div>
             </main>
 
             <aside>
                 <div class="sidebar-box">
-                    <h3>Your Reading Cart 🛒</h3>
-                    <div id="cart-container"></div>
-                    <p><strong>Total: </strong>$<span id="cart-total">0.00</span></p>
-                    <button class="btn-action" id="btn-checkout">Complete Purchase</button>
+                    <div class="sidebar-header">
+                        <h3>✦ &nbsp; Reading Cart &nbsp; ✦</h3>
+                    </div>
+                    <div class="sidebar-body">
+                        <div id="cart-container">
+                            <p class="cart-empty">Your cart awaits a selection…</p>
+                        </div>
+                        <div class="cart-total-row">
+                            <span class="cart-total-label">Total</span>
+                            <span class="cart-total-amount">$<span id="cart-total">0.00</span></span>
+                        </div>
+                        <button class="btn-action" id="btn-checkout">Complete Purchase</button>
+                    </div>
                 </div>
             </aside>
         </div>
 
+        <!-- ── ORDERS VIEW ── -->
         <div id="orders-view" class="hidden">
-            <button class="btn" style="color:var(--primary-color); border-color:var(--primary-color); margin-bottom:1rem;" id="btn-back-shop">← Back to Bookstore</button>
-            <h2>Your Order History</h2>
+            <div class="orders-header">
+                <button class="btn-back" id="btn-back-shop">← Back to Bookstore</button>
+                <h2>Order History</h2>
+            </div>
             <div id="orders-container"></div>
         </div>
 
     </div>
+
+    <footer class="page-footer">
+        <span class="footer-ornament">❧ ✦ ❧</span>
+        Navia Library &mdash; <em>Every book is a world unto itself.</em>
+    </footer>
 
     <script src="app.js"></script>
 </body>
